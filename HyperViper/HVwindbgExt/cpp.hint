@@ -1,0 +1,2 @@
+#define HVWINDBGEXT_API __declspec(dllexport)
+#define HVWINDBGEXT_API __declspec(dllimport)

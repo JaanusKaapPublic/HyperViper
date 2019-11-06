@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+HyperViper/.vs
+HyperViper/x64
+HyperViper/*/x64

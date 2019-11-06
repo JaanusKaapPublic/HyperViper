@@ -1,0 +1,1 @@
+﻿C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets(146,5): error : The 'Desktop' target platform is not supported by the target OS 'Windows10' (0xA000007) for 'ARM'.
