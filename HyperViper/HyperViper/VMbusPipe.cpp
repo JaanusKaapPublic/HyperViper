@@ -90,17 +90,6 @@ void VMbusPipe::log(PIRP irp, PVOID data)
 	if (!irp->IoStatus.Information)
 		return;
 	PVMBUS_CHANNEL_INTERNAL channel = *(PVMBUS_CHANNEL_INTERNAL*)((PCHAR)data + 0x100);
-	DbgPrint("log> channel @ 0x%llX\n", channel);
-
-	PUINT8 tmp = (PUINT8) &(channel->id);
-	for (int x = 0; x < 16; x++)
-		DbgPrint(" %02X", tmp[x]);
-	DbgPrint("\n");
-
-	tmp = (PUINT8) &activeLogGuid;
-	for (int x = 0; x < 16; x++)
-		DbgPrint(" %02X", tmp[x]);
-	DbgPrint("\n");
 
 	if (logHandle && !memcmp(&(channel->id), &activeLogGuid, sizeof(GUID)))
 	{

@@ -228,9 +228,6 @@ int main(int argc, char* argv[])
 				channels[x].id.Data4[4], channels[x].id.Data4[5], channels[x].id.Data4[6], channels[x].id.Data4[7]);
 			printf("\n  name = %S\n", channels[x].name);
 			printf("  isPipe = 0x%X\n", channels[x].isPipe);
-			printf("  nrOfPagesToAllocateInIncomingRingBuffer = 0x%X\n", channels[x].nrOfPagesToAllocateInIncomingRingBuffer);
-			printf("  nrOfPagesToAllocateInOutgoingRingBuffer = 0x%X\n", channels[x].nrOfPagesToAllocateInOutgoingRingBuffer);
-			printf("  vmBusHandle = 0x%X\n", channels[x].vmBusHandle);
 			printf("  vmID = 0x%X\n", channels[x].vmID);
 			printf("  vtlLevel = 0x%X\n\n", channels[x].vtlLevel);
 		}
