@@ -5,6 +5,26 @@
 #include "HVdriverIO.h"
 #include "Convertions.h"
 
+void help(bool doErrorMsg)
+{
+	if (doErrorMsg)
+		printf("[ERROR] Unknown or missing command type\n\n");
+
+	printf("Syntax: HVchannels.exe {command} {command arguments...}\n");
+	printf("  Commands & arguments:\n");
+	printf("    unpack {file to unpack} {directroy to where unpack}\n");
+	printf("    list\n");
+	printf("    hook {GUID of the channel to hook}\n");
+	printf("    unhook\n");
+	printf("    log {filename where to log}\n");
+	printf("    unlog\n");
+	printf("    send {GUID} {file containing main buffer} [file containing MDL buffer]\n");
+	printf("    fuzz-custom {GUID} {file containing main buffer} [file containing MDL buffer]\n");
+	printf("    fuzz {file containing recordings} [GUID to send data]\n");
+
+	exit(0);
+}
+
 
 DWORD unpack(char* file, char* dir)
 {
@@ -192,7 +212,7 @@ void send(HVdriverIO driver, GUID guid, char* file1, char* file2, bool fuzz)
 int main(int argc, char* argv[])
 {
 	if (argc < 2)
-		ERROR_EXIT("No operation specified");
+		help(true);
 
 	if (!strcmp(argv[1], "unpack"))
 	{
@@ -203,6 +223,10 @@ int main(int argc, char* argv[])
 		if (!unpack(argv[2], argv[3]))
 			ERROR_EXIT("Unpacking failed");
 		return 0;
+	}
+	else if (!strcmp(argv[1], "help"))
+	{
+		help(false);
 	}
 
 	HVdriverIO driver;
@@ -294,7 +318,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		printf("[ERROR] Unknown command\n");
+		help(true);
 	}
 }
 

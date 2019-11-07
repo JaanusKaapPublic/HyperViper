@@ -1,15 +1,31 @@
 #include <windows.h>
 #include <stdio.h>
 #include "HVdef.h"
+#include "HVUdefs.h"
 #include "HVdriverIO.h"
 #include "Convertions.h"
 
-#define ERROR_EXIT(e) {printf("[ERROR][0x%X] %s\n", GetLastError(), e); exit(0);}
+void help(bool doErrorMsg)
+{
+	if (doErrorMsg)
+		printf("[ERROR] Unknown or missing command type\n\n");
+
+	printf("Syntax: HVmsr.exe {command} {command arguments...}\n");
+	printf("  Commands & arguments:\n");
+	printf("    readMSR {processor nr} {reg nr}\n");
+	printf("    writeMSR {processor nr} {reg nr} {new value (high 32bits)} {new value (low 32bits)}\n");
+	printf("    readPMIO {port nr} {read size: 1,2,4}\n");
+	printf("    writePMIO {port nr} {value written} {read size: 1,2,4}\n");
+
+	exit(0);
+}
 
 int main(int argc, char* argv[])
 {
 	if (argc < 2)
-		ERROR_EXIT("Missing action operation");
+		help(true);
+	if (!strcmp(argv[1], "help"))
+		help(false);
 
 	HVdriverIO driver;
 	if (!driver.init())
@@ -125,7 +141,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		ERROR_EXIT("Unknown command");
+		help(true);
 	}
 }
 

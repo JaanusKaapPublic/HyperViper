@@ -6,6 +6,32 @@
 #include "HVdriverIO.h"
 #include "Convertions.h"
 
+void help(bool doErrorMsg)
+{
+	if (doErrorMsg)
+		printf("[ERROR] Unknown or missing command type\n\n");
+
+	printf("Syntax: HVhypercalls.exe {command} {command arguments...}\n");
+	printf("  Commands & arguments:\n");
+	printf("    fast {code} {count} {start index} {param1} {param2}\n");
+	printf("    slow {code} {count} {start index} {input buffer file} {output buffer file} {output buffer size}\n");
+	printf("    fuzz {file containing recorded hypercalls}\n");
+	printf("    hook\n");
+	printf("    unhook\n");
+	printf("    hook-slow {0 or 1}\n");
+	printf("    hook-fast {0 or 1}\n");
+	printf("    hook-dbg {0 or 1}\n");
+	printf("    hook-log {filename where to log}\n");
+	printf("    hook-hc-dbg {code} {count}\n");
+	printf("    hook-hc-break {code} {count}\n");
+	printf("    hook-hc-log {code} {count}\n");
+	printf("    hook-hc-fuzz {code} {count}\n");
+	printf("    stats-hc\n");
+	printf("    conf\n");
+
+	exit(0);
+}
+
 HV_X64_HYPERCALL_OUTPUT fastCall(HVdriverIO driver, UINT32 code, UINT32 count, UINT32 start, UINT64 param1, UINT64 param2)
 {
 	HV_X64_HYPERCALL_INPUT call;
@@ -193,7 +219,7 @@ DWORD fuzz(HVdriverIO driver, char* file)
 int main(int argc, char* argv[])
 {
 	if (argc < 2)
-		ERROR_EXIT("[ERROR] No operation specified");
+		help(true);
 
 	if (!strcmp(argv[1], "unpack"))
 	{
@@ -204,6 +230,10 @@ int main(int argc, char* argv[])
 		UINT32 count = unpack(argv[2], argv[3]);
 		printf("Unpacked %d hypercalls\n", count);
 		return 0;
+	}
+	else if (!strcmp(argv[1], "help"))
+	{
+		help(false);
 	}
 
 	HVdriverIO driver;
@@ -398,7 +428,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		ERROR_EXIT("Unknown command");
+		help(true);
 	}
 	
 }

@@ -5,6 +5,21 @@
 #include "HVdriverIO.h"
 #include "Convertions.h"
 
+void help(bool doErrorMsg)
+{
+	if (doErrorMsg)
+		printf("[ERROR] Unknown or missing command type\n\n");
+
+	printf("Syntax: HVpipes.exe {command} {command arguments...}\n");
+	printf("  Commands & arguments:\n");
+	printf("    unpack {file location} {directory to where unpack}\n");
+	printf("    hook {GUID}\n");
+	printf("    unhook\n");
+	printf("    log {file where log is written}\n");
+	printf("    unlog\n");
+
+	exit(0);
+}
 DWORD unpack(char* file, char* dir)
 {
 	FILE* fin, * fout;
@@ -49,7 +64,7 @@ DWORD unpack(char* file, char* dir)
 int main(int argc, char* argv[])
 {
 	if (argc < 2)
-		ERROR_EXIT("[ERROR] No operation specified");
+		help(true);
 
 	if (!strcmp(argv[1], "unpack"))
 	{
@@ -60,6 +75,10 @@ int main(int argc, char* argv[])
 		if (!unpack(argv[2], argv[3]))
 			ERROR_EXIT("Unpacking failed");
 		return 0;
+	}
+	else if (!strcmp(argv[1], "help"))
+	{
+		help(false);
 	}
 
 	HVdriverIO driver;
@@ -92,7 +111,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		printf("[ERROR] Unknown command\n");
+		help(true);
 	}
 }
 
