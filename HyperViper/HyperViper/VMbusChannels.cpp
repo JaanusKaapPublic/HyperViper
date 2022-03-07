@@ -23,21 +23,14 @@ void VMbusChannels::init(void)
 		driver = (PUINT8)KernelGetModuleBase("vmbkmcl.sys");
 	if(driver)
 	{
-		ptr = (PUINT8)KernelGetProcAddress(driver, "DllInitialize");
-		if (ptr)
+		LONG WPP_MAIN_CB_OFFSET = 0x130E0; //  vmbkmcl.sys build 10.0.19044.1526, offset 0x130E0 ==> vmbkmcl!WPP_MAIN_CB 
+		if (driver)
 		{
-			//Looking for first existing "lea     rax, SOMETHING" code snippet, SOMETHING should be pointing at KmclChannelList
-			for (int x = 0; x < 0x200; x++)
-			{
-				ptr++;
-				if (ptr[0] == 0x48 && ptr[1] == 0x8D && ptr[2] == 0x05 && ptr[5] == 0xFF && ptr[6] == 0xFF)
-				{
-					kmclChannelListLocation = (PVOID)((UINT64)ptr + 0xFFFFFFFF00000007 + *((PUINT32)(ptr + 3)));
-					break;
-				}
-			}
+		    //kmclChannelListLocation = poi(vmbkmcl+0x130e0+WPP_MAIN_CB_OFFSET)+0x20 (within windbg)
+		    kmclChannelListLocation = (PVOID)((UINT64)driver + WPP_MAIN_CB_OFFSET);   // vmbkmcl!WPP_MAIN_CB
+		    kmclChannelListLocation = (PVOID)((UINT64)kmclChannelListLocation + 0xA0);          // vmbkmcl!WPP_MAIN_CB.DeviceQueue
+		    kmclChannelListLocation = (PVOID)(*(PUINT64)kmclChannelListLocation + 0x20);        // vmbkmcl!WPP_MAIN_CB.DeviceQueue.kmclChannelListLocation
 		}
-
 		VmbChannelPacketGetExternalData = (PFN_VMB_PACKET_GET_EXTERNAL_DATA)KernelGetProcAddress(driver, "VmbChannelPacketGetExternalData");
 		VmbPacketAllocate = (PFN_VMB_PACKET_ALLOCATE)KernelGetProcAddress(driver, "VmbPacketAllocate");
 		VmbPacketSend = (PFN_VMB_PACKET_SEND)KernelGetProcAddress(driver, "VmbPacketSend");
